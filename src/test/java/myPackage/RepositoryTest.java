@@ -124,29 +124,12 @@ public class RepositoryTest {
 
     @Test
     public void searchById() {
-        Repository a = new Repository();
-        Person b = new Person();
-        Person c = new Person();
-        b.setId(12);
-        c.setId(22);
-        a.add(b);
-        a.add(c);
-        if(a.searchById(22).get(0).getId().equals(c.getId())){
-            System.out.println("searchById is ok");
-        }
+
     }
 
     @Test
     public void searchByName() {
-        Repository a = new Repository();
-        Person b = new Person();
-        Person c = new Person();
-        b.setFirstName("Alexa");
-        c.setFirstName("Robert");
-        a.add(c);
-        a.add(b);
-        if(a.searchByName("Robert").get(0).getFirstName().equals(c.getFirstName())){
-            System.out.println("SearchByName is ok");
-        }
+
+
     }
 }

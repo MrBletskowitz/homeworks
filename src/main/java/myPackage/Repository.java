@@ -11,7 +11,7 @@ import myPackage.Factory;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class Repository implements IRepository<IPerson> {
+public class Repository<T> implements IRepository<IPerson> {
     private IPerson [] objects;
     private Factory factory;
     private int size;
