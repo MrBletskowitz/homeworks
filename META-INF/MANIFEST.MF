@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: myPackage.mainClass
+Class-Path: C:\Users\Msi PC\IdeaProjects\HW\out\artifacts\Interfaces
+

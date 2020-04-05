@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<customXmlType>
+    <people id="0">
+        <firstName>Ben</firstName>
+        <lastName>Afflek</lastName>
+        <gender>MALE</gender>
+        <salary>1500</salary>
+    </people>
+    <people id="1">
+        <firstName>Carl</firstName>
+        <lastName>Johnson</lastName>
+        <gender>MALE</gender>
+        <salary>2132</salary>
+    </people>
+    <people id="2">
+        <firstName>Lol</firstName>
+        <lastName>Karenina</lastName>
+        <gender>FEMALE</gender>
+        <salary>678</salary>
+    </people>
+    <people id="3">
+        <firstName>Mike</firstName>
+        <lastName>Schleiterburg</lastName>
+        <gender>FEMALE</gender>
+        <salary>3421</salary>
+    </people>
+</customXmlType>

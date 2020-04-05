@@ -5,6 +5,7 @@ import ru.vsu.lab.entities.IDivision;
 public class Division implements IDivision {
     private Integer id;
     private String name;
+    private static DivisionMap divisionMap = new DivisionMap();
     private static Division [] divisionArray = new Division[10];
     private static int size = 0;
     Division(String name){
@@ -13,20 +14,24 @@ public class Division implements IDivision {
     Division(){
 
     }
-
     public Integer getId(){
         return this.id;
     }
-
     public void setId(Integer id){
         this.id = id;
     }
-
     public String getName(){
         return this.name;
     }
-
     public void setName(String name){
         this.name = name;
+    }
+
+    public IDivision check(String name){
+        return  divisionMap.checkDivision(name);
+    }
+
+    public DivisionMap getDivisionMap(){
+        return divisionMap;
     }
 }

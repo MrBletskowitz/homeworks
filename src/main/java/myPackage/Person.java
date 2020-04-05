@@ -11,10 +11,14 @@ import ru.vsu.lab.entities.IDivision;
 import ru.vsu.lab.entities.IPerson;
 import ru.vsu.lab.entities.enums.Gender;
 
+
+import javax.xml.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class Person implements IPerson{
+@XmlRootElement
+@XmlType(propOrder = {"firstName", "lastName", "gender", "salary", "division"})
+public class Person implements IPerson {
 
 	private int id;
 	private String firstName;
@@ -34,30 +38,41 @@ public class Person implements IPerson{
 	 * @param salary - размер З/П
 	 * @param division - подразделение
 	 */
-	Person(int id, String firstName, String lastName, LocalDate birthday, Gender gender, BigDecimal salary, IDivision division) {
+	public Person(int id, String firstName, String lastName, LocalDate birthday, Gender gender, BigDecimal salary, IDivision division) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.birthday = birthday;
 		this.gender = gender;
 		this.salary = salary;
-		this.division = division;
-		System.out.println("Person " + firstName + " " + lastName + " is created");
+		Division div = new Division();
+		//this.division = div.check(division.getName());
 	}
 
 	/**
 	 * Конструктор по-умолчанию
 	 */
-	Person(){
+	public Person(){
 
 	}
+
 
 	/**
 	 * Получение Id
 	 * @return id человека
 	 */
+	@XmlAttribute
 	public Integer getId() {
 		return id;
+	}
+
+	@XmlTransient
+	public LocalDate getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(LocalDate birthday) {
+		this.birthday = birthday;
 	}
 
 	/**
@@ -104,6 +119,7 @@ public class Person implements IPerson{
 	 * Получение даты рождения
 	 * @return дата рождения
 	 */
+	@XmlTransient
 	public LocalDate getBirthdate(){
 		return this.birthday;
 	}
@@ -172,6 +188,7 @@ public class Person implements IPerson{
 	 * Get person's division
 	 * @return division
 	 */
+	@XmlAnyElement
 	public IDivision getDivision(){
 		return this.division;
 	}
@@ -181,7 +198,8 @@ public class Person implements IPerson{
 	 * @param division - new division
 	 */
 	public void setDivision(IDivision division){
-		this.division = division;
+		Division div = new Division();
+		this.division = div.check(division.getName());
 	}
 
 }

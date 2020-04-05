@@ -5,13 +5,24 @@
  */
 package myPackage;
 
+
+import myPackage.Factory;
 import ru.vsu.lab.entities.IPerson;
 import ru.vsu.lab.repository.IRepository;
-import myPackage.Factory;
+
+import javax.xml.bind.annotation.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.logging.FileHandler;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.Logger;
 
+@XmlRootElement
 public class Repository<T> implements IRepository<IPerson> {
+    Logger logger = Logger.getLogger(Repository.class.getName());
+    FileHandler fh = new FileHandler("C:\\Users\\Msi PC\\IdeaProjects\\HW\\src\\main\\resources\\logfile.log");
+    SimpleFormatter sf = new SimpleFormatter();
     private IPerson [] objects;
     private Factory factory;
     private int size;
@@ -19,11 +30,17 @@ public class Repository<T> implements IRepository<IPerson> {
     /**
      * Constructor of Repository
      */
-    Repository() {
+    Repository() throws IOException {
+        fh.setFormatter(sf);
+        logger.addHandler(fh);
         objects = new IPerson[10];
         size = 0;
+        logger.info("Repository created");
     }
-
+    public IPerson[] getObjects(){
+        logger.info("Objects got");
+        return objects;
+    }
     /**
      * increasing size of Repository
      * @param currentSize size of array before changing
@@ -35,6 +52,12 @@ public class Repository<T> implements IRepository<IPerson> {
         for(int i = 0; i < old.length; i++){
             objects[i] = old[i];
         }
+        logger.info("Size of repository increased to " + objects.length + " objects");
+    }
+
+    public int getSize(){
+        logger.info("Size got");
+        return size;
     }
 
     /**
@@ -69,6 +92,7 @@ public class Repository<T> implements IRepository<IPerson> {
         }
         objects[size] = Person;
         size++;
+        logger.info("Person " + Person.getFirstName() + " " + Person.getLastName() + " added");
     }
 
     /**
@@ -81,21 +105,25 @@ public class Repository<T> implements IRepository<IPerson> {
             increaseSize(size);
             size++;
         }
-        IPerson [] repl = new Person[size-index+1];
-        for(int i = 0; i < size-index+1; i++) {
+        IPerson [] repl = new Person[size-index];
+        for(int i = 0; i < repl.length; i++) {
             repl[i] = objects[index+i];
         }
         if(index == 0){
+            objects[index] = person;
+            size++;
             for(int i = index+1, j = 0; i < size; i++, j++) {
                 objects[i] = repl[j];
             }
         }
         else {
             objects[index] = person;
+            size++;
             for (int i = index + 1, j = 0; i < size; i++, j++) {
                 objects[i] = repl[j];
             }
         }
+        logger.info("Person " + person.getFirstName() + " " + person.getLastName() + " added to " + index + " position");
     }
 
     /**
@@ -104,6 +132,7 @@ public class Repository<T> implements IRepository<IPerson> {
      * @return - required element
      */
     public IPerson get(int id){
+        logger.info("Person with id=" + id + " got");
         return this.objects[id];
     }
 
@@ -114,17 +143,20 @@ public class Repository<T> implements IRepository<IPerson> {
      */
     public void set(int index, IPerson person){
         this.objects[index] = person;
+        logger.info("Person " + person.getFirstName() + " " + person.getLastName() + " was set to " + index + " position");
     }
 
     /**
      * Convert repository from array to list
      * @return list of Persons
      */
+
     public List<IPerson> toList(){
         List<IPerson> objectList = new LinkedList<>();
         for(int i = 0; i < size; i++) {
             objectList.add(objects[i]);
         }
+        logger.info("Repository was converted to list");
         return objectList;
     }
 
@@ -137,6 +169,7 @@ public class Repository<T> implements IRepository<IPerson> {
                 del = objects[index];
                 objects[index] = null;
                 replace(index+1);
+                logger.info("Person with index=" + index + " was deleted");
                 return del;
     }
 
@@ -161,6 +194,7 @@ public class Repository<T> implements IRepository<IPerson> {
             }
         };
         sortBy(comparator);
+        logger.info("Repository was sorted");
     }
 
     /**
@@ -190,6 +224,7 @@ public class Repository<T> implements IRepository<IPerson> {
             }
         };
         sortBy(comparator);
+        logger.info("Repository was sorted by name");
     }
 
     /**
@@ -198,17 +233,10 @@ public class Repository<T> implements IRepository<IPerson> {
      */
     public void sortBy(Comparator<IPerson> comparator) {
         if(size != 0) {
-            IPerson [] sort = new IPerson[size];
-            for(int i = 0; i < size-1; i++){
-                if(comparator.compare(objects[i], objects[i+1]) > 0){
-                    IPerson reserved = new Person();
-                    reserved = objects[i];
-                    objects[i] = objects[i+1];
-                    objects[i+1] = reserved;
-                    sortBy(comparator);
-                }
-            }
-            return;
+           BubbleSort<IPerson> sort = new BubbleSort<IPerson>();
+           sort.Sort((Repository<IPerson>) this, comparator, 0, 0);
+            //sort.QuickSort((Repository<IPerson>) this, comparator, 0, size-1);
+            logger.info("Repository was sorted");
         }
     }
 
@@ -224,6 +252,7 @@ public class Repository<T> implements IRepository<IPerson> {
                 return person.getId().equals(id);
             }
         };
+        logger.info("Searching for person with id=" + id);
         return searchBy(predicate);
     }
     /**
@@ -238,6 +267,7 @@ public class Repository<T> implements IRepository<IPerson> {
                 return person.getFirstName().equals(name);
             }
         };
+        logger.info("Searching for person with name=" + name);
         return searchBy(predicate);
     }
     /**
@@ -246,12 +276,19 @@ public class Repository<T> implements IRepository<IPerson> {
      * @return Repository with the results
      */
     public IRepository searchBy(Predicate<IPerson> condition){
-        Repository withResults = new Repository();
+        Repository withResults = null;
+        try {
+            withResults = new Repository();
+        } catch (IOException e) {
+            logger.warning("Exception " + e.getMessage());
+            e.printStackTrace();
+        }
         for(int i = 0; i < size; i++){
             if(condition.test(objects[i])){
                 withResults.add(objects[i]);
             }
         }
+        logger.info("Searching with predicate");
         return withResults;
     }
 //клонировать через maven, через dependency подгружать интерфейсы
