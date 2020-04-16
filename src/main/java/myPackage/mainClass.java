@@ -19,12 +19,15 @@ import java.time.Month;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.LogManager;
+
 
 
 public class mainClass {
 
 public static void main(String[] args) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException, CustomInjectionExeption {
 	StreamApiClass streamApiClass = new StreamApiClass();
+
 	//streamApiClass.method1();
 	/*System.out.println("-------------------");
 	streamApiClass.method2();
